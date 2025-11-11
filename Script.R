@@ -527,11 +527,11 @@ ratio_achi_clean <- visreg(
   rug     = FALSE,          
   legend  = FALSE,           
   line.par = list(           
-    col = c("#4C72B0", "#55A868", "#C44E52"),
+    col = c("#55A868","#4C72B0","#C44E52"),
     lwd = 2                  
   ),
   fill.par = list(          
-    col = c("#4C72B080", "#55A86880", "#C44E5280")
+    col = c("#55A86880","#4C72B080","#C44E5280")
   ),
   xlab    = "Proportion of inter-social-origin help-seeking",
   ylab    = "Achievement",
@@ -542,14 +542,14 @@ ratio_achi_clean <- visreg(
 par(xpd = TRUE)
 
 legend("topright",
-       legend = c("Low", "Intermediate", "High"),
+       legend = c("low", "intermediate", "high"),
        title  = "Social Origin Group",
-       col    = c("#4C72B0", "#55A868", "#C44E52"),
+       col    = c("#55A868","#4C72B0",  "#C44E52"),
        lty    = 1,
        bty    = "o") 
 
 
-ibrary(ggeffects)
+library(ggeffects)
 
 # Create predicted data with CI by group
 pred <- ggpredict(ratio_ineq_3c_dc_fix, terms = c("ratio_3c_dc", "ses_3c"))
@@ -564,11 +564,11 @@ div_ratio_figure <- ggplot(pred, aes(x = x, y = predicted, color = group, fill =
   geom_line(size = 1.2) +
   geom_ribbon(aes(ymin = conf.low, ymax = conf.high), alpha = 0.2, color = NA) +
   scale_color_manual(
-    values = c("low" = "#4C72B0", "intermediate" = "#55A868", "high" = "#C44E52"),
+    values = c("low" ="#55A868" , "intermediate" ="#4C72B0" , "high" = "#C44E52"),
     labels = c("low", "intermediate", "high")
   ) +
   scale_fill_manual(
-    values = c("low" = "#4C72B080", "intermediate" = "#55A86880", "high" = "#C44E5280"),
+    values = c("low" = "#55A86880", "intermediate" ="#4C72B080" , "high" = "#C44E5280"),
     labels = c("low", "intermediate", "high")
   ) +
   labs(
@@ -602,9 +602,9 @@ data_figure <- data_dc_st %>%
   transmute(
     ses_3c = fct_recode(
       ses_3c,
-      Low          = "[11,42.3]",
-      Intermediate = "(42.3,61.8]",
-      High         = "(61.8,89]"
+      low          = "[11,42.3]",
+      intermediate = "(42.3,61.8]",
+      high         = "(61.8,89]"
     ),
     shaw_gen= shaw_gen_dc,
     shaw_eth= shaw_eth_dc,
@@ -639,10 +639,13 @@ div_ineq_3c_dc_cat <-lmer(TR_NOTE_MAT_recode~ses_3c*simps_c+
                             (ses_3c|IDTESTGROUP_FDZ),
                           data=data_figure, REML=T)
 
+emm_options(lmerTest.limit = 29597)
+emm_options(pbkrtest.limit = 29597)
+
 emm_direct <- emmeans(
   div_ineq_3c_dc_cat,
-  specs = c("simps.3c", "ses_3c"),
-  at    = list(simps.3c = simps_seq, ses_3c = levels(data_figure$ses_3c)),
+  specs = c("simps_c", "ses_3c"),
+  at    = list(simps_c = simps_seq, ses_3c = levels(data_figure$ses_3c)),
   type  = "response"
 )
 
@@ -653,8 +656,14 @@ direct_plot <- ggplot(emm_direct,
   geom_ribbon(aes(ymin = lower.CL, ymax = upper.CL),
               alpha = 0.2, colour = NA) +
   geom_line(size = 1.5) +
-  scale_color_brewer("Social Origin", palette = "Dark2") +
-  scale_fill_brewer("Social Origin",  palette = "Dark2") +
+  scale_color_manual(
+    values = c("low" ="#55A868" , "intermediate" ="#4C72B0" , "high" = "#C44E52"),
+    labels = c("low", "intermediate", "high")
+  ) +
+  scale_fill_manual(
+    values = c("low" = "#55A86880", "intermediate" ="#4C72B080" , "high" = "#C44E5280"),
+    labels = c("low", "intermediate", "high")
+  ) +
   labs(
     x     = "Classroom Social Diversity",
     y     = "Achievement",
@@ -704,8 +713,14 @@ interaction_plot_eth <- ggplot(emm_eth, aes(x = simps_c, y = emmean, color = ses
               alpha = 0.2, colour = NA) +
   geom_line(size = 1.5) +
   facet_wrap(~ shaw_bin_eth, nrow = 1) +
-  scale_color_brewer("Social Origin", palette = "Dark2") +
-  scale_fill_brewer("Social Origin",  palette = "Dark2") +
+  scale_color_manual(
+    values = c("low" ="#55A868" , "intermediate" ="#4C72B0" , "high" = "#C44E52"),
+    labels = c("low", "intermediate", "high")
+  ) +
+  scale_fill_manual(
+    values = c("low" = "#55A86880", "intermediate" ="#4C72B080" , "high" = "#C44E5280"),
+    labels = c("low", "intermediate", "high")
+  ) +
   labs(
     x = "Classroom Social Diversity",
     y = "Achievement",
@@ -754,8 +769,14 @@ interaction_plot_gen <- ggplot(emm_gen, aes(x = simps_c, y = emmean, color = ses
               alpha = 0.2, colour = NA) +
   geom_line(size = 1.5) +
   facet_wrap(~ shaw_bin_gen, nrow = 1) +
-  scale_color_brewer("Social Origin", palette = "Dark2") +
-  scale_fill_brewer("Social Origin",  palette = "Dark2") +
+  scale_color_manual(
+    values = c("low" ="#55A868" , "intermediate" ="#4C72B0" , "high" = "#C44E52"),
+    labels = c("low", "intermediate", "high")
+  ) +
+  scale_fill_manual(
+    values = c("low" = "#55A86880", "intermediate" ="#4C72B080" , "high" = "#C44E5280"),
+    labels = c("low", "intermediate", "high")
+  ) +
   labs(
     x = "Classroom Social Diversity",
     y = "Achievement",
